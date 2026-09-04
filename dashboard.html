@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardFlow | Command Center</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AOS Animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      min-height: 100vh;
+      background-color: var(--bg-primary);
+    }
+
+    .sidebar {
+      width: 260px;
+      height: 100vh;
+      background-color: var(--bg-secondary);
+      border-right: 1px solid var(--glass-border);
+      position: fixed;
+      left: 0;
+      top: 0;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .sidebar h2 {
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 40px;
+      color: var(--accent-teal);
+      letter-spacing: 1px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 10px;
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 15px;
+      color: var(--text-secondary);
+      border-radius: 12px;
+      transition: var(--transition-smooth);
+      font-weight: 500;
+    }
+
+    .sidebar ul li a:hover, .sidebar ul li a.active {
+      background: var(--glass-bg);
+      color: var(--accent-teal);
+      box-shadow: inset 0 0 0 1px var(--glass-border);
+    }
+
+    .sidebar ul li a i {
+      width: 20px;
+      text-align: center;
+    }
+
+    .main-content {
+      margin-left: 260px;
+      flex: 1;
+      padding: 40px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .dashboard-header h1 {
+      font-size: 2rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .quick-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .user-welcome {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>CardFlow</h2>
+    <ul>
+      <li><a href="dashboard.html" class="active"><i class="fas fa-th-large"></i> Dashboard</a></li>
+      <li><a href="mycards.html"><i class="fas fa-credit-card"></i> My Cards</a></li>
+      <li><a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+      <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+      <li style="margin-top: auto;"><a href="index.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+      <li><a href="index.html" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <div class="dashboard-header">
+      <div>
+        <h1>Welcome, <span id="user-name" style="color: var(--accent-teal);">User</span></h1>
+        <p class="user-welcome">Here is your account overview</p>
+      </div>
+      <div class="user-badge glass-card" style="padding: 10px 20px; border-radius: 30px;">
+        <i class="fas fa-crown" style="color: gold;"></i> Premium User
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="glass-card stat-card" data-aos="fade-up">
+        <span class="stat-label">Total Cards</span>
+        <span class="stat-value" id="total-cards">0</span>
+      </div>
+      <div class="glass-card stat-card" data-aos="fade-up" data-aos-delay="100">
+        <span class="stat-label">Available Credit</span>
+        <span class="stat-value">₹4,50,000</span>
+      </div>
+      <div class="glass-card stat-card" data-aos="fade-up" data-aos-delay="200">
+        <span class="stat-label">Monthly Spend</span>
+        <span class="stat-value">₹12,400</span>
+      </div>
+    </div>
+
+    <h2 class="mb-20">Quick Actions</h2>
+    <div class="quick-links-grid">
+      <div class="glass-card" style="padding: 30px; text-align: center;" data-aos="fade-up" data-aos-delay="300">
+        <i class="fas fa-plus-circle" style="font-size: 2rem; color: var(--accent-teal); margin-bottom: 15px;"></i>
+        <h3>Add New Card</h3>
+        <p class="mb-20">Expand your vault by adding a new credit card.</p>
+        <a href="mycards.html" class="btn-neon">Add Card</a>
+      </div>
+
+      <div class="glass-card" style="padding: 30px; text-align: center;" data-aos="fade-up" data-aos-delay="400">
+        <i class="fas fa-receipt" style="font-size: 2rem; color: var(--accent-purple); margin-bottom: 15px;"></i>
+        <h3>View Ledger</h3>
+        <p class="mb-20">Deep dive into your recent transaction history.</p>
+        <a href="transactions.html" class="btn-neon" style="border-color: var(--accent-purple); color: var(--accent-purple);">View History</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    AOS.init();
+
+    document.getElementById("user-name").textContent = Storage.get("name") || "Guest";
+    document.getElementById("total-cards").textContent = Storage.get("cards") || "0";
+
+    function logout() {
+        UI.showNotification("Logging out...");
+        setTimeout(() => {
+            Storage.clear();
+            navigateTo("index.html");
+        }, 1000);
+    }
+  </script>
+</body>
+</html>

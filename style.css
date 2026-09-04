@@ -1,0 +1,151 @@
+/*
+  CardFlow Styles
+  Dark Theme
+*/
+
+:root {
+    --bg-primary: #0A0A0B;
+    --bg-secondary: #111112;
+    --accent-teal: #00F2FF;
+    --accent-purple: #BC13FE;
+    --accent-emerald: #00FFA3;
+    --text-primary: #FFFFFF;
+    --text-secondary: #A0A0A0;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --neon-glow: 0 0 10px rgba(0, 242, 255, 0.5), 0 0 20px rgba(0, 242, 255, 0.2);
+    --transition-smooth: all 0.3s ease;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', 'Poppins', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition-smooth);
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: var(--transition-smooth);
+}
+
+.glass-card:hover {
+    border-color: var(--accent-teal);
+    box-shadow: 0 8px 32px 0 rgba(0, 255, 204, 0.1);
+}
+
+/* Neon Button */
+.btn-neon {
+    background: transparent;
+    border: 2px solid var(--accent-teal);
+    color: var(--accent-teal);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 1px;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-neon:hover {
+    background: var(--accent-teal);
+    color: var(--bg-primary);
+    box-shadow: var(--neon-glow);
+}
+
+/* Form Elements */
+.input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 16px;
+    transition: var(--transition-smooth);
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 0 2px rgba(0, 255, 204, 0.2);
+}
+
+/* Credit Card Component */
+.card-visual {
+    width: 350px;
+    height: 200px;
+    border-radius: 20px;
+    padding: 25px;
+    position: relative;
+    color: white;
+    background: linear-gradient(135deg, #232526, #414345);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 20px auto;
+    cursor: pointer;
+    transform-style: preserve-3d;
+}
+
+.card-visual .chip {
+    width: 50px;
+    height: 40px;
+    background: linear-gradient(135deg, #ffd700, #b8860b);
+    border-radius: 8px;
+}
+
+.card-visual .card-number {
+    font-size: 22px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 3px;
+    margin: 20px 0;
+}
+
+.card-visual .card-footer {
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.mt-20 { margin-top: 20px; }
+.mb-20 { margin-bottom: 20px; }
+.flex-center { display: flex; justify-content: center; align-items: center; }

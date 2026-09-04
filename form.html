@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardFlow | Join the Elite</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AOS Animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, #1a1a1d 0%, #0a0a0b 100%);
+      margin: 0;
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+    }
+
+    .form-box {
+      padding: 40px;
+      text-align: center;
+    }
+
+    .form-box h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+
+    .form-box p {
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      text-align: center;
+      transition: var(--transition-smooth);
+    }
+
+    .back-link:hover {
+      color: var(--accent-teal);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container" data-aos="zoom-in">
+    <div class="glass-card form-box">
+      <h2>Welcome Back</h2>
+      <p>Enter your details to login to your account</p>
+
+      <form id="userForm">
+        <div class="input-group">
+          <input type="text" id="name" placeholder="Full Name" required>
+        </div>
+        <div class="input-group">
+          <input type="email" id="email" placeholder="Email Address" required>
+        </div>
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Password" required>
+        </div>
+        <div class="input-group">
+          <input type="number" id="cards" placeholder="Number of Cards" required>
+        </div>
+        <button type="submit" class="btn-neon submit-btn">
+          Access Dashboard <i class="fas fa-chevron-right"></i>
+        </button>
+      </form>
+
+      <a href="index.html" class="back-link">Back to Home</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    AOS.init();
+
+    document.getElementById("userForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const cards = document.getElementById("cards").value;
+
+      if(name && email && password && cards) {
+        Storage.save("name", name);
+        Storage.save("email", email);
+        Storage.save("password", password);
+        Storage.save("cards", cards);
+
+        UI.showNotification("Welcome to the vault, " + name + "!");
+
+        setTimeout(() => {
+          navigateTo("profile.html");
+        }, 1000);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardFlow | Virtual Vault</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AOS Animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      background: radial-gradient(circle at center, #1a1a1d 0%, #0a0a0b 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .page-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .cards-display {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 40px;
+      margin-bottom: 60px;
+      justify-items: center;
+    }
+
+    /* 3D Card Component */
+    .card-wrapper {
+      perspective: 1000px;
+      width: 350px;
+      height: 200px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+
+    .card-wrapper.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 20px;
+      padding: 25px;
+      box-sizing: border-box;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #232526, #414345);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-back {
+      background: #1a1a1a;
+      color: white;
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid var(--glass-border);
+    }
+
+    .card-strip {
+      width: 100%;
+      height: 40px;
+      background: #000;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+
+    .card-details-back {
+      text-align: center;
+      width: 100%;
+    }
+
+    .card-details-back p {
+      font-family: 'Courier New', monospace;
+      font-size: 1.2rem;
+      margin: 10px 0;
+    }
+
+    .chip {
+      width: 45px;
+      height: 35px;
+      background: linear-gradient(135deg, #ffd700, #b8860b);
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    .card-number {
+      font-size: 22px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 3px;
+      margin: 20px 0;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Live Preview Form */
+    .form-section {
+      display: flex;
+      gap: 50px;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+
+    .preview-container {
+      position: sticky;
+      top: 40px;
+    }
+
+    .add-card-form {
+      width: 400px;
+      padding: 40px;
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="page-header" data-aos="fade-down">
+      <h1>My Cards</h1>
+      <p style="color: var(--text-secondary);">Manage your saved credit cards</p>
+      <a href="dashboard.html" class="btn-neon mt-20" style="font-size: 12px; padding: 8px 16px;">Back to Dashboard</a>
+    </div>
+
+    <div class="cards-display" id="cards-vault">
+      <!-- Cards will be injected here -->
+    </div>
+
+    <div class="form-section">
+      <div class="preview-container" data-aos="fade-right">
+        <h3 class="text-center mb-20">Live Preview</h3>
+        <div class="card-visual" id="live-card">
+          <div class="chip"></div>
+          <div class="card-number" id="prev-number">XXXX XXXX XXXX XXXX</div>
+          <div class="card-footer">
+            <div>
+              <div style="font-size: 10px;">CARD HOLDER</div>
+              <div id="prev-name">YOUR NAME</div>
+            </div>
+            <div>
+              <div style="font-size: 10px;">EXPIRES</div>
+              <div id="prev-expiry">MM/YY</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card add-card-form" data-aos="fade-left">
+        <h2 class="form-title">Add New Asset</h2>
+        <form id="cardForm">
+          <div class="input-group">
+            <input type="text" id="holder" placeholder="Card Holder Name" required>
+          </div>
+          <div class="input-group">
+            <input type="text" id="number" placeholder="Card Number" maxlength="16" required>
+          </div>
+          <div class="input-group">
+            <input type="date" id="expiry" required>
+          </div>
+          <div class="input-group">
+            <input type="text" id="cvv" placeholder="CVV" maxlength="3" required>
+          </div>
+          <button type="submit" class="btn-neon submit-btn" style="width: 100%;">Add Card <i class="fas fa-plus"></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    AOS.init();
+
+    const vault = document.getElementById("cards-vault");
+    const cardForm = document.getElementById("cardForm");
+
+    // Initial mock cards
+    const initialCards = [
+      { holder: "HARSHA", number: "4532 1122 3344 5566", expiry: "12/26", cvv: "123" },
+      { holder: "PREMIUM USER", number: "5412 8877 6655 4433", expiry: "08/25", cvv: "456" }
+    ];
+
+    function createCardElement(card) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'card-wrapper';
+      wrapper.setAttribute('data-tilt', '');
+      wrapper.onclick = () => wrapper.classList.toggle('flipped');
+
+      wrapper.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="chip"></div>
+            <div class="card-number">${card.number}</div>
+            <div class="card-footer">
+              <div>
+                <div style="font-size: 10px;">CARD HOLDER</div>
+                <div>${card.holder}</div>
+              </div>
+              <div>
+                <div style="font-size: 10px;">EXPIRES</div>
+                <div>${card.expiry}</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-back">
+            <div class="card-strip"></div>
+            <div class="card-details-back">
+              <p>CVV: ${card.cvv}</p>
+              <p style="font-size: 10px; color: var(--text-secondary);">AUTHORIZED SIGNATURE</p>
+            </div>
+          </div>
+        </div>
+      `;
+      return wrapper;
+    }
+
+    function renderVault() {
+      vault.innerHTML = "";
+      initialCards.forEach(card => {
+        vault.appendChild(createCardElement(card));
+      });
+      // Re-initialize tilt for new elements
+      VanillaTilt.init(document.querySelectorAll('.card-wrapper'), {
+        max: 15,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.2,
+      });
+    }
+
+    // Live Preview Logic
+    document.getElementById("holder").addEventListener("input", (e) => {
+      document.getElementById("prev-name").textContent = e.target.value || "YOUR NAME";
+    });
+
+    document.getElementById("number").addEventListener("input", (e) => {
+      let val = e.target.value.replace(/\s+/g, '').replace(/(\d{4})/g, '$1 ').trim();
+      document.getElementById("prev-number").textContent = val || "XXXX XXXX XXXX XXXX";
+    });
+
+    document.getElementById("expiry").addEventListener("input", (e) => {
+      let date = new Date(e.target.value);
+      let formatted = isNaN(date) ? "MM/YY" : `${date.getMonth()+1}/${date.getFullYear().toString().slice(-2)}`;
+      document.getElementById("prev-expiry").textContent = formatted;
+    });
+
+    cardForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const newCard = {
+        holder: document.getElementById("holder").value.toUpperCase(),
+        number: document.getElementById("number").value.replace(/\s+/g, '').replace(/(\d{4})/g, '$1 ').trim(),
+        expiry: document.getElementById("expiry").value.split('-').slice(1).reverse().join('/'), // Simplified date to MM/YY
+        cvv: document.getElementById("cvv").value
+      };
+
+      initialCards.push(newCard);
+      renderVault();
+      cardForm.reset();
+
+      // Reset preview
+      document.getElementById("prev-name").textContent = "YOUR NAME";
+      document.getElementById("prev-number").textContent = "XXXX XXXX XXXX XXXX";
+      document.getElementById("prev-expiry").textContent = "MM/YY";
+
+      UI.showNotification("New asset forged successfully!");
+    });
+
+    renderVault();
+  </script>
+</body>
+</html>

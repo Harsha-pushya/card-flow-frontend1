@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardFlow | Transaction Ledger</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AOS Animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      background: radial-gradient(circle at center, #1a1a1d 0%, #0a0a0b 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .ledger-container {
+      margin-bottom: 40px;
+    }
+
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: var(--transition-smooth);
+    }
+
+    .transaction-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .tx-icon {
+      width: 45px;
+      height: 45px;
+      background: var(--glass-bg);
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-teal);
+      font-size: 1.2rem;
+    }
+
+    .tx-details h4 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .tx-details p {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .tx-amount {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .tx-amount.negative { color: #ff4d4d; }
+    .tx-amount.positive { color: var(--accent-emerald); }
+
+    /* Payment Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      width: 400px;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .payment-status {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid var(--glass-border);
+      border-top: 5px solid var(--accent-teal);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .btn-pay {
+      width: 100%;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="page-header" data-aos="fade-down">
+      <h1>Transactions</h1>
+      <p style="color: var(--text-secondary);">Your recent payment history</p>
+      <a href="dashboard.html" class="btn-neon mt-20" style="font-size: 12px; padding: 8px 16px;">Back to Dashboard</a>
+    </div>
+
+    <div class="glass-card ledger-container" data-aos="fade-up">
+      <div id="transaction-list">
+        <!-- Sample Data -->
+        <div class="transaction-item">
+          <div class="transaction-info">
+            <div class="tx-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="tx-details">
+              <h4>Grocery Shopping</h4>
+              <p>2026-05-09 &bull; Card **** 5566</p>
+            </div>
+          </div>
+          <div class="tx-amount negative">- ₹2,500</div>
+        </div>
+        <div class="transaction-item">
+          <div class="transaction-info">
+            <div class="tx-icon"><i class="fas fa-mobile-alt"></i></div>
+            <div class="tx-details">
+              <h4>Online Recharge</h4>
+              <p>2026-05-08 &bull; Card **** 4433</p>
+            </div>
+          </div>
+          <div class="tx-amount negative">- ₹399</div>
+        </div>
+      </div>
+
+      <div style="padding: 20px; border-top: 1px solid var(--glass-border); margin-top: 20px;">
+        <h3 class="text-center mb-20">Add Entry</h3>
+        <form id="transaction-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="input-group">
+            <input type="date" id="date" required>
+          </div>
+          <div class="input-group">
+            <input type="text" id="desc" placeholder="Description" required>
+          </div>
+          <div class="input-group" style="grid-column: span 2;">
+            <input type="number" id="amount" placeholder="Amount (₹)" required>
+          </div>
+          <button type="submit" class="btn-neon" style="grid-column: span 2;">Log Transaction <i class="fas fa-plus"></i></button>
+        </form>
+      </div>
+    </div>
+
+    <div class="text-center mt-20" data-aos="fade-up">
+        <button class="btn-neon" onclick="openPaymentModal()" style="padding: 15px 40px; font-size: 1.1rem;">
+            Pay Credit Bill <i class="fas fa-wallet"></i>
+        </button>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="glass-card modal-content">
+      <div id="payment-form-ui">
+        <h2>Pay Bill</h2>
+        <p class="mb-20" style="color: var(--text-secondary);">Enter amount to pay your current balance</p>
+        <div class="input-group">
+          <input type="number" id="pay-amount" placeholder="Amount to Pay (₹)" required>
+        </div>
+        <button class="btn-neon btn-pay" onclick="processPayment()">Pay Now <i class="fas fa-shield-check"></i></button>
+        <button class="btn-neon mt-20" style="border-color: #ff4d4d; color: #ff4d4d;" onclick="closePaymentModal()">Cancel</button>
+      </div>
+
+      <div class="payment-status" id="payment-status-ui">
+        <div class="spinner"></div>
+        <h3>Processing Transaction...</h3>
+        <p>Securing connection to bank gateway</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    AOS.init();
+
+    const txList = document.getElementById("transaction-list");
+    const txForm = document.getElementById("transaction-form");
+
+    txForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      const date = document.getElementById("date").value;
+      const desc = document.getElementById("desc").value;
+      const amount = document.getElementById("amount").value;
+
+      const item = document.createElement("div");
+      item.className = "transaction-item";
+      item.innerHTML = `
+        <div class="transaction-info">
+          <div class="tx-icon"><i class="fas fa-receipt"></i></div>
+          <div class="tx-details">
+            <h4>${desc}</h4>
+            <p>${date} &bull; Manual Entry</p>
+          </div>
+        </div>
+        <div class="tx-amount negative">- ₹${amount}</div>
+      `;
+      txList.prepend(item);
+      txForm.reset();
+      UI.showNotification("Transaction logged successfully!");
+    });
+
+    function openPaymentModal() {
+      document.getElementById("paymentModal").style.display = "flex";
+    }
+
+    function closePaymentModal() {
+      document.getElementById("paymentModal").style.display = "none";
+    }
+
+    function processPayment() {
+      const amount = document.getElementById("pay-amount").value;
+      if(!amount) {
+        UI.showNotification("Please enter amount", "error");
+        return;
+      }
+
+      document.getElementById("payment-form-ui").style.display = "none";
+      document.getElementById("payment-status-ui").style.display = "flex";
+
+      setTimeout(() => {
+        UI.showNotification("Payment Authorized!");
+        navigateTo("recipt.html");
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

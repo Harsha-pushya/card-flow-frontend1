@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardFlow | Payment Verified</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AOS Animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, #1a1a1d 0%, #0a0a0b 100%);
+      margin: 0;
+    }
+
+    .receipt-ticket {
+      width: 380px;
+      background: #fff;
+      color: #000;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+      animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .ticket-top {
+      background: var(--accent-emerald);
+      padding: 40px 20px;
+      text-align: center;
+      color: white;
+    }
+
+    .ticket-top i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .ticket-body {
+      padding: 30px;
+      background: white;
+    }
+
+    .ticket-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-size: 14px;
+      border-bottom: 1px dashed #ddd;
+      padding-bottom: 8px;
+    }
+
+    .ticket-row span:first-child {
+      color: #888;
+    }
+
+    .ticket-row span:last-child {
+      font-weight: 600;
+      color: #222;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 2px solid #000;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .ticket-footer {
+      text-align: center;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #888;
+      font-size: 12px;
+    }
+
+    .perforation {
+      height: 20px;
+      background-image: radial-gradient(circle, transparent 50%, #0a0a0b 50%);
+      background-size: 20px 20px;
+      background-position: 0 0;
+      position: relative;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(100px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-done {
+      display: block;
+      text-align: center;
+      background: #000;
+      color: #fff;
+      padding: 15px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 20px;
+      border-radius: 10px;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-done:hover {
+      background: var(--accent-teal);
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="receipt-ticket">
+    <div class="ticket-top">
+      <i class="fas fa-check-circle"></i>
+      <h2>Payment Verified</h2>
+      <p>Transaction Completed Successfully</p>
+    </div>
+
+    <div class="perforation"></div>
+
+    <div class="ticket-body">
+      <div class="ticket-row">
+        <span>Date</span>
+        <span id="rec-date">2026-05-10</span>
+      </div>
+      <div class="ticket-row">
+        <span>Transaction ID</span>
+        <span>TXN_CF_99284102</span>
+      </div>
+      <div class="ticket-row">
+        <span>Account Holder</span>
+        <span id="rec-name">Member</span>
+      </div>
+      <div class="ticket-row">
+        <span>Payment Method</span>
+        <span>Digital Vault Card</span>
+      </div>
+
+      <div class="total-row">
+        <span>Total Paid</span>
+        <span id="rec-amount">₹2,500</span>
+      </div>
+
+      <a href="dashboard.html" class="btn-done">Return to Dashboard</a>
+    </div>
+
+    <div class="ticket-footer">
+      <p>CardFlow Premium Financial Services</p>
+      <p>Secure &bull; Encrypted &bull; Elite</p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    AOS.init();
+    document.getElementById("rec-name").textContent = Storage.get("name") || "Premium Member";
+    document.getElementById("rec-date").textContent = new Date().toISOString().split('T')[0];
+  </script>
+</body>
+</html>
